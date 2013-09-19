@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='mtlpy.release',
+setup(name='mtlpy-release',
       version='0.1',
       description='Montreal-Python',
       author='mtlpy',
@@ -9,6 +9,6 @@ setup(name='mtlpy.release',
       packages=find_packages(),
       entry_points = """\
       [console_scripts]
-      mtlpy-release = mtlpy.release:main
+      mtlpy-release = mtlpy-release:main
       """,
       )
