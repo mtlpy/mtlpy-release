@@ -26,7 +26,7 @@ def strip_accents(s):
                    if unicodedata.category(char) != 'Mn')
 
 
-def generate_release_names(num, names, translate=True):
+def generate_release_names(num, names, translate=True, show_excluded=False):
     """Generate release names for Montréal Python edition
 
     num: amount of names to generate
@@ -73,11 +73,9 @@ def generate_release_names(num, names, translate=True):
             save(en_names, en_adj, en_noun)
             save(fr_names, fr_adj, fr_noun)
             continue
-        else:
-            # to see the names that are omitted uncomment this line:
-            # print en_name
-            pass
-            # TODO: remove this statement
+        elif show_excluded:
+            c = lambda c: ' '.join([w.capitalize() for w in c.split(' ')])
+            print "excluded: %s (%s)" % (c(en_name), c(fr_name))
 
     return fr_names, en_names
 
@@ -119,6 +117,9 @@ def main():
     parser.add_argument("-N", "--no-translation", default=True,
                         dest="translate", action="store_false",
                         help="force the script not to query google translate")
+    parser.add_argument("-S", "--show-excluded", default=False,
+                        dest="show_excluded", action="store_true",
+                        help="print names excluded by selection")
 
     args = parser.parse_args()
 
@@ -127,10 +128,13 @@ def main():
     nouns = find_words("noun")[l]
 
     names = get_release_names(args.number, adjs, nouns)
-    fr_names, en_names = generate_release_names(args.number,
-                                                names,
-                                                translate=args.translate)
+    fr_names, en_names = generate_release_names(
+        args.number,
+        names,
+        translate=args.translate,
+        show_excluded=args.show_excluded)
 
+    output = ""
     for n, en_name in enumerate(en_names):
         en_name = ' '.join([word.capitalize() for word in en_name.split(' ')])
         if fr_names:
@@ -139,7 +143,9 @@ def main():
         elif not args.translate:
             fr_name = '[translations disabled]'
 
-        print '{0:>32} - {1:<32}'.format(en_name, fr_name)
+        output += '{0:>32} - {1:<32}\n'.format(en_name, fr_name)
+
+    print "\n%s" % output
 
 if __name__ == '__main__':
     main()
