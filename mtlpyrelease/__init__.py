@@ -138,7 +138,7 @@ def main():
     for n, en_name in enumerate(en_names):
         en_name = ' '.join([word.capitalize() for word in en_name.split(' ')])
         if fr_names:
-            fr_name = ' '.join([word.capitalize()
+            fr_name = ' '.join([word.decode('utf8').capitalize()
                                 for word in fr_names[n].split(' ')])
         elif not args.translate:
             fr_name = '[translations disabled]'
