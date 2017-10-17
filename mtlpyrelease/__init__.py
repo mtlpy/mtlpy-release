@@ -3,6 +3,8 @@
 
 """ Find the name for a Montréal-Python release"""
 
+import os
+import platform
 import time
 import unicodedata
 
@@ -13,6 +15,7 @@ from string import ascii_lowercase
 from translate import Translator
 
 WN_BASE = "/usr/share/wordnet/index."
+WN_BASE_DARWIN = "/usr/local/Cellar/wordnet/3.1/dict/index."
 
 
 # seed the PRNG with today's date to have a consistent random choice all
@@ -94,14 +97,20 @@ def get_release_names(num, adjectives, nouns):
     return names
 
 
+def build_path(type):
+    """Returns the path to the dictionary"""
+    if platform.system() == 'Darwin':
+        return WN_BASE_DARWIN + type
+    return WN_BASE + type
+
+
 def find_words(word_type):
-    """Returns a dict of first letter to set of words.
-    """
+    """Returns a dict of first letter to set of words."""
     assert word_type in ["adj", "noun"]
 
     words = defaultdict(lambda: [])
 
-    for l in open(WN_BASE + word_type):
+    for l in open(build_path(word_type)):
         if l and not l.startswith(" "):
             w = l.split()[0].strip()
             if "_" not in w:
@@ -120,12 +129,17 @@ def main():
     parser.add_argument("-S", "--show-excluded", default=False,
                         dest="show_excluded", action="store_true",
                         help="print names excluded by selection")
+    parser.add_argument("-l", "--letter", dest="letter", type=str,
+                        help="base letter to generate")
 
     args = parser.parse_args()
 
-    l = random_choice(ascii_lowercase)
-    adjs = find_words("adj")[l]
-    nouns = find_words("noun")[l]
+    letter = args.letter
+    if not letter:
+        letter = random_choice(ascii_lowercase)
+
+    adjs = find_words("adj")[letter]
+    nouns = find_words("noun")[letter]
 
     names = get_release_names(args.number, adjs, nouns)
     fr_names, en_names = generate_release_names(
