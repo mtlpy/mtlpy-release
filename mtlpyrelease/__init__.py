@@ -129,9 +129,9 @@ def main():
     parser.add_argument("-S", "--show-excluded", default=False,
                         dest="show_excluded", action="store_true",
                         help="print names excluded by selection")
-    parser.add_argument("--adjective", dest="adjective", type=str,
+    parser.add_argument("adjective", type=str,
                         help="adjective to generate")
-    parser.add_argument("--noun", dest="noun", type=str,
+    parser.add_argument("noun", type=str,
                         help="noun to generate")
 
     args = parser.parse_args()
@@ -162,11 +162,17 @@ def main():
             fr_name = ' '.join([word.decode('utf8').capitalize()
                                 for word in fr_names[n].split(' ')])
         elif not args.translate:
-            fr_name = '[translations disabled]'
+            fr_name = ''
 
-        output += '{0:>32} - {1:<32}\n'.format(en_name, fr_name)
+        output += '{0:>32}'.format(en_name)
+
+        if fr_name:
+            output += ' - {1:<32}\n'.format(fr_name)
+        else:
+            output += '\n'
 
     print "\n%s" % output
+
 
 if __name__ == '__main__':
     main()
