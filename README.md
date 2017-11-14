@@ -12,6 +12,14 @@ $ python setup.py develop
 ### MacOS
 
 ```
-brew cask install xquartz
-brew install wordnet
+$ brew cask install xquartz
+$ brew install wordnet
+```
+
+## How to
+
+Simply run the following command:
+
+```
+$ mtlpyr -n 20 -N w x
 ```
