@@ -104,7 +104,7 @@ def build_path(type):
     return WN_BASE + type
 
 
-def find_words(word_type):
+def find_words(word_type, min_length=0):
     """Returns a dict of first letter to set of words."""
     assert word_type in ["adj", "noun"]
 
@@ -113,7 +113,11 @@ def find_words(word_type):
     for l in open(build_path(word_type)):
         if l and not l.startswith(" "):
             w = l.split()[0].strip()
-            if "_" not in w:
+            if "_" in w:
+                continue
+            elif len(w) < min_length:
+                continue
+            else:
                 words[l[0].lower()].append(w)
 
     return words
@@ -129,6 +133,8 @@ def main():
     parser.add_argument("-S", "--show-excluded", default=False,
                         dest="show_excluded", action="store_true",
                         help="print names excluded by selection")
+    parser.add_argument("--min-length", dest="min_length", default=0, type=int,
+                        help="minimum length for words")
     parser.add_argument("adjective", type=str,
                         help="adjective to generate")
     parser.add_argument("noun", type=str,
@@ -145,8 +151,8 @@ def main():
     if not noun:
         noun = random_choice(ascii_lowercase)
 
-    adjs = find_words("adj")[adjective]
-    nouns = find_words("noun")[noun]
+    adjs = find_words("adj", min_length=args.min_length)[adjective]
+    nouns = find_words("noun", min_length=args.min_length)[noun]
 
     names = get_release_names(args.number, adjs, nouns)
     fr_names, en_names = generate_release_names(
