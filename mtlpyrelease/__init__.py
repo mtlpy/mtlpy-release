@@ -129,17 +129,24 @@ def main():
     parser.add_argument("-S", "--show-excluded", default=False,
                         dest="show_excluded", action="store_true",
                         help="print names excluded by selection")
-    parser.add_argument("-l", "--letter", dest="letter", type=str,
-                        help="base letter to generate")
+    parser.add_argument("--adjective", dest="adjective", type=str,
+                        help="adjective to generate")
+    parser.add_argument("--noun", dest="noun", type=str,
+                        help="noun to generate")
 
     args = parser.parse_args()
 
-    letter = args.letter
-    if not letter:
-        letter = random_choice(ascii_lowercase)
+    adjective = args.adjective
+    noun = args.noun
 
-    adjs = find_words("adj")[letter]
-    nouns = find_words("noun")[letter]
+    if not adjective:
+        adjective = random_choice(ascii_lowercase)
+
+    if not noun:
+        noun = random_choice(ascii_lowercase)
+
+    adjs = find_words("adj")[adjective]
+    nouns = find_words("noun")[noun]
 
     names = get_release_names(args.number, adjs, nouns)
     fr_names, en_names = generate_release_names(
