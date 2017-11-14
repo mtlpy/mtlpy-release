@@ -123,8 +123,8 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("-n", "--number", default=10, dest='number',
                         type=int, help="number or names to generate")
-    parser.add_argument("-N", "--no-translation", default=True,
-                        dest="translate", action="store_false",
+    parser.add_argument("-T", "--translation", default=False,
+                        dest="translate", action="store_true",
                         help="force the script not to query google translate")
     parser.add_argument("-S", "--show-excluded", default=False,
                         dest="show_excluded", action="store_true",
