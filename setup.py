@@ -7,9 +7,9 @@ setup(name='mtlpyrelease',
       author_email='mtlpyteam@googlegroups.com',
       url='http://montrealpython.org/',
       packages=find_packages(),
-      entry_points = {
+      entry_points={
           'console_scripts': [
-          'mtlpyr = mtlpyrelease:main'
+            'mtlpy-event-name-generator = mtlpyrelease.scripts.event_name_generator:main',
           ]
       },
       install_requires=['translate>=0.0.6']
