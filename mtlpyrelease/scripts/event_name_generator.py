@@ -29,8 +29,10 @@ def main():
 
     args = parser.parse_args()
 
-    adjective = args.adjective
-    noun = args.noun
+    # Proper and common nouns are equally valid, so all choices are normalized
+    # to be in the same lower-case bucket.
+    adjective = args.adjective.lower()
+    noun = args.noun.lower()
 
     if not adjective:
         adjective = release.random_choice(ascii_lowercase)
