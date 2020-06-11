@@ -22,23 +22,25 @@ def main():
                         help="print names excluded by selection")
     parser.add_argument("--min-length", dest="min_length", default=0, type=int,
                         help="minimum length for words")
-    parser.add_argument("adjective", type=str,
+    parser.add_argument("-i", dest="id", default=None, type=int,
+                        help="generate 'adj' and 'noun' based on ID number")
+    parser.add_argument("adjective", type=str, default=None, nargs='?',
                         help="adjective to generate")
-    parser.add_argument("noun", type=str,
+    parser.add_argument("noun", type=str, default=None, nargs='?',
                         help="noun to generate")
 
     args = parser.parse_args()
 
-    # Proper and common nouns are equally valid, so all choices are normalized
-    # to be in the same lower-case bucket.
-    adjective = args.adjective.lower()
-    noun = args.noun.lower()
-
-    if not adjective:
-        adjective = release.random_choice(ascii_lowercase)
-
-    if not noun:
-        noun = release.random_choice(ascii_lowercase)
+    if args.id is not None:
+        adjective, noun = release.relnum_to_letters(args.id)
+    elif args.adjective is not None and args.noun is not None:
+        # Proper and common nouns are equally valid, so all choices are
+        # normalized to be in the same lower-case bucket.
+        adjective = args.adjective.lower()
+        noun = args.noun.lower()
+    else:
+        parser.error("You must specify a release ID or both 'adjective' and"
+                     " 'noun' letters.")
 
     adjs = release.find_words("adj", min_length=args.min_length)[adjective]
     nouns = release.find_words("noun", min_length=args.min_length)[noun]
