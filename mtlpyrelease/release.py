@@ -120,7 +120,11 @@ def generate_release_names(num, names, translate=True, show_excluded=False):
 
 def relnum_to_letters(num):
     ''' Convert an event number to a pair of letters for the English initials
-    of the event name. '''
+    of the event name. 
+
+    On rare exceptions, the initials derived from the following rules were
+    used for the French name, but in most cases, the rule was applied to the
+    English name.'''
 
     if num < 17:
         # The first 16 events never had a name.
