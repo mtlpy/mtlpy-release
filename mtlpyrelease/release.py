@@ -117,3 +117,38 @@ def generate_release_names(num, names, translate=True, show_excluded=False):
             print("excluded: %s (%s)" % (c(en_name), c(fr_name)))
 
     return fr_names, en_names
+
+def relnum_to_letters(num):
+    ''' Convert an event number to a pair of letters for the English initials
+    of the event name. 
+
+    On rare exceptions, the initials derived from the following rules were
+    used for the French name, but in most cases, the rule was applied to the
+    English name.'''
+
+    if num < 17:
+        # The first 16 events never had a name.
+        raise ValueError("Event #{} didn't have a name.".format(num))
+    elif num < 43:
+        # the next 26 events repeated the letter
+        letter = chr(ord('a') + num - 17)
+        return (letter, letter)
+    elif (57 <= num <= 69) or (43 <= num <= 56):
+        # from #43 to 56 and from #57 to 69, noun is one letter ahead of adj, 
+        # advance by two per event
+        if num < 57:
+            offset = (num - 43) * 2
+        else:
+            offset = (num - 57) * 2
+        adj = chr(ord('a') + offset)
+        noun = chr(ord('b') + offset)
+        return (adj, noun)
+    elif 70 <= num <= 95:
+        # starting with #70, adj is 'z', noun is 'a', they move in
+        # opposite directions
+        adj = chr(ord('z') - num + 70)
+        noun = chr(ord('a') + num - 70)
+        return (adj, noun)
+    else:
+        raise ValueError('No know rule for generating the name of event {}'
+                         .format(num))
