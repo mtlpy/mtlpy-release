@@ -4,11 +4,10 @@ import platform
 import time
 import unicodedata
 
-
 from collections import defaultdict
-from random import Random, choice
+from random import Random, choice, randrange, getstate, setstate, seed
 from translate import Translator
-
+from string import ascii_lowercase
 
 WN_BASE = "/usr/share/wordnet/index."
 WN_BASE_DARWIN = "/usr/local/Cellar/wordnet/3.1/dict/index."
@@ -118,6 +117,30 @@ def generate_release_names(num, names, translate=True, show_excluded=False):
 
     return fr_names, en_names
 
+
+def event_num_offsets(num):
+    ''' Return two offsets to define how the words of event names are selected. 
+    
+    Every 26 events, a new series is generated. Inside a series, the 
+    progression of letters from one event to the next is obvious.
+    
+    This system was is not historically compatible with the events up to MP-95. 
+    It was first used at MP-96 and could extend to infinity if needed. '''
+    old_state = getstate()
+    series = 6 + (num - 96) // 26
+    event_offset = (num - 96) % 26
+    
+    # going deterministic for a moment
+    seed(f"This is a beatiful day to hack. Series: {series}")  
+
+    adj_offset = (randrange(26) + event_offset * choice([-1, 1])) % 26
+    nout_offset = (randrange(26) + event_offset * choice([-1, 1])) % 26
+
+    setstate(old_state)  # back to chaos!
+
+    return (adj_offset, nout_offset)
+
+
 def relnum_to_letters(num):
     ''' Convert an event number to a pair of letters for the English initials
     of the event name. 
@@ -150,5 +173,5 @@ def relnum_to_letters(num):
         noun = chr(ord('a') + num - 70)
         return (adj, noun)
     else:
-        raise ValueError('No know rule for generating the name of event {}'
-                         .format(num))
+        adj_o, noun_o = event_num_offsets(num)
+        return ascii_lowercase[adj_o], ascii_lowercase[noun_o]

@@ -2,4 +2,6 @@
 .vscode/
 .DS_Store
 *.egg-info/
-*.pyc
+*.pyc.envrc
+Pipfile.lock
+__pycache__
