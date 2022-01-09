@@ -5,7 +5,7 @@ import time
 import unicodedata
 
 from collections import defaultdict
-from random import Random, choice, randrange, getstate, setstate, seed
+from random import Random, choice
 from translate import Translator
 from string import ascii_lowercase
 
@@ -122,23 +122,20 @@ def event_num_offsets(num):
     ''' Return two offsets to define how the words of event names are selected. 
     
     Every 26 events, a new series is generated. Inside a series, the 
-    progression of letters from one event to the next is obvious.
+    progression of letters from one event to the next is linear -1 or +1.
     
     This system was is not historically compatible with the events up to MP-95. 
     It was first used at MP-96 and could extend to infinity if needed. '''
-    old_state = getstate()
-    series = 6 + (num - 96) // 26
-    event_offset = (num - 96) % 26
+    div, event_offset = divmod(num - 96, 26)
+    series = 6 + div  # This formula was first use for the 6th series of names
     
-    # going deterministic for a moment
-    seed(f"This is a beatiful day to hack. Series: {series}")  
+    rand = Random(f"This is a beautiful day to hack. Series: {series}")  
+    adj_start = rand.randrange(26)
+    adj_offset = (adj_start + event_offset * rand.choice([-1, 1])) % 26
+    noun_start = rand.randrange(26)
+    noun_offset = (noun_start + event_offset * rand.choice([-1, 1])) % 26
 
-    adj_offset = (randrange(26) + event_offset * choice([-1, 1])) % 26
-    nout_offset = (randrange(26) + event_offset * choice([-1, 1])) % 26
-
-    setstate(old_state)  # back to chaos!
-
-    return (adj_offset, nout_offset)
+    return (adj_offset, noun_offset)
 
 
 def relnum_to_letters(num):
