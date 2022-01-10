@@ -12,5 +12,4 @@ setup(name='mtlpyrelease',
             'mtlpy-event-name-generator = mtlpyrelease.scripts.event_name_generator:main',
           ]
       },
-      install_requires=['translate>=0.0.6']
-      )
+    )
