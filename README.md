@@ -18,8 +18,8 @@ $ brew install wordnet
 
 ## How to
 
-Simply run the following command:
+Simply run the following command to generate 20 possible names for MP-90:
 
 ```
-$ mtlpyr -n 20 -N w x
+$ mtlpy-event-name-generator -n 20 -i 90 
 ```
